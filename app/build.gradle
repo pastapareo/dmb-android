@@ -1,0 +1,116 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+/**
+ * Path of the debug keystore file that contains the signing key.
+ */
+def KEYSTORE_FILE_DEBUG = "keystore${File.separator}android-keystore.jks"
+
+/**
+ * Path of the qa keystore file that contains the signing key.
+ */
+def KEYSTORE_FILE_QA = "keystore${File.separator}android-keystore.jks"
+
+/**
+ * Path of the keystore file that contains the signing key.
+ */
+def KEYSTORE_FILE = "keystore${File.separator}android-keystore.jks"
+
+android {
+    namespace 'com.pastareo.dmb_android'
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.pastareo.dmb_android"
+        minSdk 21
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile project.file("${KEYSTORE_FILE_DEBUG}")
+            storePassword 'kuri03'
+            keyAlias 'key0'
+            keyPassword 'kuri03'
+        }
+        qa {
+            storeFile project.file("${KEYSTORE_FILE_QA}")
+            storePassword 'kuri03'
+            keyAlias 'key0'
+            keyPassword 'kuri03'
+        }
+        release {
+            storeFile project.file("${KEYSTORE_FILE}")
+            storePassword 'kuri03'
+            keyAlias 'key0'
+            keyPassword 'kuri03'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        qa {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+        }
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    flavorDimensions 'custom'
+    productFlavors {
+        dev {
+            dimension 'custom'
+            applicationId 'com.pastapareo.android.dmb'
+        }
+        internal {
+            dimension 'custom'
+            applicationId 'com.pastapareo.test.android.dmb'
+        }
+        bankname {
+            dimension 'custom'
+            applicationId 'bankname.dmb'
+        }
+        tbs {
+            dimension 'custom'
+            applicationId 'tbs.dmb'
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation project(':flutter')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
